@@ -10,40 +10,47 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400, //!largo del viewpor del siguiente column scrollable
-      child: ListView(
-          children: transactions
-              .map((e) => Card(
-                      child: Row(
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 15),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.purple, width: 2)),
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          '\$ ${e.amount}',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.purple),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            e.title,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          Text(DateFormat.yMMMd().add_jm().format(e.date)),
-                        ],
-                      )
-                    ],
-                  )))
-              .toList()),
+      height: 400, //!Viewpor's height of next column scrollable
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          //!Index will give access to every child.
+          return Card(
+              //!Must return the widget item which will form the column scrollable
+              child: Row(
+            children: <Widget>[
+              Container(
+                margin:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.purple, width: 2)),
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  '\$ ${transactions[index].amount}',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.purple),
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    transactions[index].title,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Text(DateFormat.yMMMd()
+                      .add_jm()
+                      .format(transactions[index].date)),
+                ],
+              )
+            ],
+          ));
+        },
+        itemCount: transactions
+            .length, //!Just number of items. Because it will repeat the itemBuilder: funcion for every item.
+      ),
     );
   }
 }
