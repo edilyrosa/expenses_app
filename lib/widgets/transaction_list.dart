@@ -10,7 +10,7 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400, //!Viewpor's height of next column scrollable
+      height: 600, //!Viewpor's height of next column scrollable
       child: ListView.builder(
         itemBuilder: (context, index) {
           //!Index will give access to every child.
@@ -22,14 +22,15 @@ class TransactionList extends StatelessWidget {
                 margin:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
-                    border: Border.all(color: Colors.purple, width: 2)),
+                    border: Border.all(
+                        color: Theme.of(context).primaryColorLight, width: 2)),
                 padding: const EdgeInsets.all(10),
                 child: Text(
-                  '\$ ${transactions[index].amount}',
-                  style: const TextStyle(
+                  '\$ ${transactions[index].amount.toStringAsFixed(2)}',
+                  style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
-                      color: Colors.purple),
+                      color: Theme.of(context).primaryColor),
                 ),
               ),
               Column(
