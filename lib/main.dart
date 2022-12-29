@@ -1,8 +1,12 @@
+import 'dart:js_util';
+
+import 'package:expenses_app/widgets/chart.dart';
 import 'package:expenses_app/widgets/new_transaction.dart';
 import 'package:expenses_app/widgets/transaction_list.dart';
 import 'package:flutter/material.dart';
 import 'models/transaction.dart';
 
+//?trabajar sobre este
 void main() {
   runApp(const MyApp());
 }
@@ -13,14 +17,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Personal Expenses',
-      home: MyHomePage(),
-      theme: ThemeData(
+        title: 'Personal Expenses',
+        home: MyHomePage(),
+        theme: ThemeData(
           primarySwatch: Colors.purple,
-          accentColor:
-              Colors.pink //is based on 1 color but generates different shades
+          accentColor: Color.fromARGB(255, 171, 50, 125),
+          fontFamily: "Quicksand", //!font general
+          textTheme: ThemeData.light().textTheme.copyWith(
+              //!se lo podremos aplicar a acualqueir texto q lo invoque
+              headline6: const TextStyle(
+                  fontFamily: "OpenSans",
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold)),
+          appBarTheme: const AppBarTheme(
+            titleTextStyle: TextStyle(
+                fontFamily: "OpenSans",
+                color: Colors.white,
+                fontSize: 30,
+                fontWeight: FontWeight.bold),
           ),
-    );
+        ));
   }
 }
 
@@ -32,16 +48,25 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 //!class 2 of stateful: extends State has the void method with setState() & build()
   final List<Transaction> _userTransactions = [
-    Transaction(
-        id: 't1', title: 'New shoes', amount: 20.99, date: DateTime.now()),
-    Transaction(
-        id: 't2',
-        title: 'Weekly Grociers',
-        amount: 50.99,
-        date: DateTime.now()),
-    Transaction(
-        id: 't3', title: 'New t-shirt', amount: 10.99, date: DateTime.now())
+    // Transaction(
+    //     id: 't1', title: 'New shoes', amount: 20.99, date: DateTime.now()),
+    // Transaction(
+    //     id: 't2',
+    //     title: 'Weekly Grociers',
+    //     amount: 50.99,
+    //     date: DateTime.now()),
+    // Transaction(
+    //     id: 't3', title: 'New t-shirt', amount: 10.99, date: DateTime.now())
   ];
+
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
+    //debimos convertir _userTransactions a list, con .toList()
+    //pq where() return un Iterable<transaction> no una lista, y ese es el TDD getter
+    //asi q lo q resulte de where() debe ser convertido a List
+  }
 
   void _addNewTransaction(String txTitle, double txAmount) {
     final newTx = Transaction(
@@ -80,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Personal Expenses"),
+        title: const Text("Personal Expenses"), //Affected by AppBarTheme()
         actions: <Widget>[
           IconButton(
             onPressed: () => _startAddNewTransaction(context),
@@ -96,13 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
           //mainAxisAlignment: MainAxisAlignment.start, //!Default .start
           crossAxisAlignment: CrossAxisAlignment.stretch, //! = double.infinity
           children: <Widget>[
-            Container(
-              width: 500, //!No esta cogiendo el ancho de tu padre.
-              child: Card(
-                  color: Theme.of(context).primaryColorLight,
-                  child: Text("CHART")),
-            ),
-            TransactionList(_userTransactions)
+            Chart(_recentTransactions),
+            TransactionList(_userTransactions) //!PINTA LA LISTA
           ],
         ),
       ),
